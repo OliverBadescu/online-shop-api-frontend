@@ -1,4 +1,5 @@
 import { getAllProducts } from "./service.js";
+import { createCartPage } from "../Cart/functions.js";
 
 
 export function createHomePage(userId){
@@ -21,7 +22,7 @@ export function createHomePage(userId){
         <div class="navigation-container-icons">
             <a href="#" class="user-icon"><i class="fa-regular fa-user"></i></a>
             <a href="#"><i class="fa-regular fa-heart"></i></a>
-            <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="#" class="shopping-cart-icon"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </div>
 
@@ -122,11 +123,16 @@ export function createHomePage(userId){
     loadProducts(ct, limit)
 
     const showMore = document.querySelector('.show-more-button');
+    const shoppingCart= document.querySelector('.shopping-cart-icon');
 
     showMore.addEventListener('click', ()=>{
         ct+= limit;
         loadProducts(ct, limit);
 
+    });
+
+    shoppingCart.addEventListener('click', () =>{
+        createCartPage();
     });
 
 
