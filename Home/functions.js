@@ -1,5 +1,6 @@
 import { getAllProducts } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
+import { addProductToCart, getCartByUserId } from "../Cart/service.js";
 
 
 export function createHomePage(userId,cart){
@@ -120,7 +121,7 @@ export function createHomePage(userId,cart){
     
     `;
 
-    loadProducts(ct, limit)
+    loadProducts(ct, limit, userId)
 
     const showMore = document.querySelector('.show-more-button');
     const shoppingCart= document.querySelector('.shopping-cart-icon');
@@ -132,6 +133,7 @@ export function createHomePage(userId,cart){
     });
 
     shoppingCart.addEventListener('click', () =>{
+        loadCart(userId);
         createCartPage(cart, userId);
     });
 
@@ -139,33 +141,50 @@ export function createHomePage(userId,cart){
 
 }
 
-function createProductCard(product){
+function createProductCard(product, userId) {
     const div = document.createElement("div");
-
     div.classList.add("product-card");
 
     div.innerHTML = `
-    
-                    <img src="assets/imgs/test.jpg" alt="">
-                    <p>${product.name}</p>
-                    <p class="description">${product.description}</p>
-                    <p>$${product.price}</p>
-                    <button class="add-to-cart">Add to cart</button>
-    
+        <img src="assets/imgs/test.jpg" alt="">
+        <p>${product.name}</p>
+        <p class="description">${product.description}</p>
+        <p>$${product.price}</p>
+        <button class="add-to-cart" data-id="${product.id}">Add to cart</button>
     `;
+
+
+    const addToCartButton = div.querySelector('.add-to-cart');
+    if (!addToCartButton) {
+        console.error("Add to cart button not found");
+    } else {
+        addToCartButton.addEventListener('click', async () => {
+
+            const productRequest = {
+                productId: addToCartButton.getAttribute('data-id'),
+                quantity: 1
+            };
+
+            let result = await addProductToCart(userId, productRequest);
+
+            if (result) {
+                alert("Added to cart successfully");
+            }
+        });
+    }
 
     return div;
 }
 
-function attachProductCards(products){
+function attachProductCards(products, userId){
     let cardSection = document.querySelector('.card-section');
 
-    products.map(product => createProductCard(product)).forEach(element =>{
+    products.map(product => createProductCard(product, userId)).forEach(element =>{
         cardSection.appendChild(element);
     })
 }
 
-async function loadProducts(offset = 0, limit = 8) { 
+async function loadProducts(offset = 0, limit = 8, userId) { 
     try {
         let response = await getAllProducts();
         let products = response.body.list;
@@ -173,7 +192,7 @@ async function loadProducts(offset = 0, limit = 8) {
 
         let limitedProducts = products.slice(offset, offset+limit);
 
-        attachProductCards(limitedProducts);
+        attachProductCards(limitedProducts, userId);
         if(offset + limit >= products.length){
             const showMore = document.querySelector('.show-more-button');
             showMore.style.display = 'none';
@@ -183,9 +202,16 @@ async function loadProducts(offset = 0, limit = 8) {
     }
 }
 
-function addToCart(){
+async function loadCart(userId){
+
+    let result = await getCartByUserId(userId);
+    let body = result.body;
+    let cart = body.list;
+
+    console.log(cart);
+
+    return cart;
 
 
-    
 
 }

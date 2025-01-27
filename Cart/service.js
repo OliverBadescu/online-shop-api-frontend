@@ -59,3 +59,27 @@ export async function deleteProductFromCart(userId, productId){
        return { success: false, message: err };
    }
 }
+
+
+export async function addProductToCart(userId, product){
+    try{
+
+
+        let response= await apiCart(`addProductToCart/${userId}`,"post",product)
+
+
+        let data= await response.json();
+
+
+        return {
+            status: response.status,
+            success:true,
+            body: data
+
+       };
+
+   }catch(err){
+
+       return { success: false, message: err };
+   }
+}

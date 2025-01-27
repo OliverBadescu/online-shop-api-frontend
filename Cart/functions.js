@@ -147,19 +147,21 @@ export function createCartPage(cart, userId){
 }
 
 
-function createTotalCart(products){
-
+function createTotalCart(products) {
     const totalCartValue = products.reduce((total, product) => {
         return total + product.price * product.quantity;
     }, 0); 
-
 
     const p = document.createElement("p");
     p.classList.add("total-price");
     p.innerHTML = `$${totalCartValue.toFixed(2)}`; 
 
     let totalSection = document.querySelector('.total-cart');
-    totalSection.appendChild(p);
+    if (totalSection) {
+        totalSection.appendChild(p);
+    } else {
+        console.error("Total section not found");
+    }
 }
 
 function attachProductCards(products, userId) {
@@ -182,14 +184,10 @@ function createCartProductCard(product, userId, products) {
         <td><a href="#" data-id="${product.productId}" class="delete-product"><i class="fa-solid fa-trash"></i></a></td>
     `;
 
-    
-
-    
     const deleteButton = tr.querySelector('.delete-product');
     deleteButton.addEventListener('click', async (event) => {
         event.preventDefault();
         const productId = deleteButton.getAttribute('data-id');
-        console.log(productId);
         const success = await deleteProductFromCartPage(productId, userId);
 
         if (success) {
@@ -198,9 +196,7 @@ function createCartProductCard(product, userId, products) {
             if (productIndex !== -1) {
                 products.splice(productIndex, 1); 
             }
-
             tr.remove();
-
             updateTotalCartAfterDeletion(products);
         }
     });
@@ -216,9 +212,10 @@ function updateTotalCartAfterDeletion(products) {
     const totalPriceElement = document.querySelector('.total-price');
     if (totalPriceElement) {
         totalPriceElement.innerHTML = `$${totalCartValue.toFixed(2)}`;
+    } else {
+        console.error("Total price element not found");
     }
 }
-
 async function deleteProductFromCartPage(productId, userId) {
     try {
         let result = await deleteProductFromCart(userId, productId);

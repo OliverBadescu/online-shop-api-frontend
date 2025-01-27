@@ -566,7 +566,8 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
     padding: 20px 50px 60px;
     border-radius: 8px;
     border: 1px solid #ddd;
-
+    display: flex;
+    flex-direction: column;
     
 }
 
