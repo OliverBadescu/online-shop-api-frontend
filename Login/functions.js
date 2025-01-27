@@ -1,5 +1,6 @@
 import { login, register } from "./service.js";
 import { createHomePage } from "../Home/functions.js";
+import { getCartByUserId } from "../Cart/service.js";
 
 export function createLoginPage(){
     let container = document.querySelector(".container");
@@ -54,7 +55,11 @@ export function createLoginPage(){
         if(result.status=== 200){
 
             const data = result.body;
-            createHomePage(data.id);
+            const id = data.id;
+            const cartResult = await getCartByUserId(id);
+            const cartData = cartResult.body;
+            const cart = cartData.list;
+            createHomePage(id, cart);
         }else{
             const error = document.querySelector(".login-error");
             if(error){

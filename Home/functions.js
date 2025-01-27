@@ -2,7 +2,7 @@ import { getAllProducts } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
 
 
-export function createHomePage(userId){
+export function createHomePage(userId,cart){
 
     let container = document.querySelector(".container");
     let ct = 0;
@@ -132,7 +132,7 @@ export function createHomePage(userId){
     });
 
     shoppingCart.addEventListener('click', () =>{
-        createCartPage();
+        createCartPage(cart, userId);
     });
 
 
@@ -181,4 +181,11 @@ async function loadProducts(offset = 0, limit = 8) {
     } catch (err) {
         console.log(err);
     }
+}
+
+function addToCart(){
+
+
+    
+
 }

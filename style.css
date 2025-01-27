@@ -510,6 +510,10 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
     text-align: left;
 }
 
+.cart-table tr th{
+    text-align: center;
+}
+
 .cart-table th {
     background-color: #f8e7cf;
     text-align: left;
@@ -526,7 +530,7 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
     color: #555;
 }
 
-.cart-table td:first-child {
+.cart-table td{
     text-align: center;
 }
 
@@ -574,17 +578,24 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
     text-align: center;
 }
 
-.subtotal-cart,
+
 .total-cart {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 10px;
+    margin: 50px 0 10px;
+    
     font-size: 16px;
 }
 
-.total-cart p {
-    font-weight: bold;
-    color: #d4a26a;
+.cart-total p{
+    font-weight: 600;
+}
+
+
+
+.total-price{
+    color: #b88e2f;
+    font-size: 20px;
 }
 
 .check-out-button {

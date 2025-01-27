@@ -1,6 +1,6 @@
+import { deleteProductFromCart } from "./service.js";
 
-
-export function createCartPage(){
+export function createCartPage(cart, userId){
 
 
     let container = document.querySelector('.container');
@@ -40,31 +40,20 @@ export function createCartPage(){
 
         <table class="cart-table">
             <tr>
-                <th colspan="2" class="product-table"><p>Product</p></th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Subtotal</th>
+                <th><p>Product</p></th>
+                <th><p>Price</p></th>
+                <th><p>Quantity</p></th>
+                <th><p>Subtotal</p></th>
             </tr>
-            <tr>
-                <td><img src="imgs/sofa.jpg" alt=""></td>
-                <td>Sofa</td>
-                <td>$500</td>
-                <td><input type="number" name="number" id="quantity"></td>
-                <td>$500</td>
-                <td><a href="#"><i class="fa-solid fa-trash"></i></a></td>
-            </tr>
+ 
         </table>
 
 
         <div class="cart-total">
             <h1>Cart Total</h1>
-            <div class="subtotal-cart">
-                <p>Subtotal</p>
-                <p class="subtotal-price">$500</p>
-            </div>
             <div class="total-cart">
                 <p>Total</p>
-                <p class="total-price">$500</p>
+
             </div>
 
             <button class="check-out-button">Check Out</button>
@@ -138,5 +127,110 @@ export function createCartPage(){
     </div>
     
     `;
+    attachProductCards(cart, userId);
+    createTotalCart(cart);
 
+
+
+    let table = document.querySelector('.cart-table');
+
+    table.addEventListener('click', async (event) =>{
+        let product = event.target;
+
+        if(product.classList.contains("delete-product")){
+            const productId = product.getAttribute("data-id");
+
+        }
+
+    });
+
+}
+
+
+function createTotalCart(products){
+
+    const totalCartValue = products.reduce((total, product) => {
+        return total + product.price * product.quantity;
+    }, 0); 
+
+
+    const p = document.createElement("p");
+    p.classList.add("total-price");
+    p.innerHTML = `$${totalCartValue.toFixed(2)}`; 
+
+    let totalSection = document.querySelector('.total-cart');
+    totalSection.appendChild(p);
+}
+
+function attachProductCards(products, userId) {
+    let cardSection = document.querySelector('.cart-table');
+
+    products.map(product => createCartProductCard(product, userId, products)).forEach(element => {
+        cardSection.appendChild(element);
+    });
+}
+
+function createCartProductCard(product, userId, products) {
+    const tr = document.createElement("tr");
+    tr.classList.add("product-card-cart");
+
+    tr.innerHTML = `
+        <td>${product.name}</td>
+        <td>$${product.price}</td>
+        <td><input type="number" name="number" id="quantity" value="${product.quantity}"></td>
+        <td>$${product.price * product.quantity}</td>
+        <td><a href="#" data-id="${product.productId}" class="delete-product"><i class="fa-solid fa-trash"></i></a></td>
+    `;
+
+    
+
+    
+    const deleteButton = tr.querySelector('.delete-product');
+    deleteButton.addEventListener('click', async (event) => {
+        event.preventDefault();
+        const productId = deleteButton.getAttribute('data-id');
+        console.log(productId);
+        const success = await deleteProductFromCartPage(productId, userId);
+
+        if (success) {
+            
+            const productIndex = products.findIndex(product => product.id === productId);
+            if (productIndex !== -1) {
+                products.splice(productIndex, 1); 
+            }
+
+            tr.remove();
+
+            updateTotalCartAfterDeletion(products);
+        }
+    });
+
+    return tr;
+}
+
+function updateTotalCartAfterDeletion(products) {
+    const totalCartValue = products.reduce((total, product) => {
+        return total + product.price * product.quantity;
+    }, 0);
+
+    const totalPriceElement = document.querySelector('.total-price');
+    if (totalPriceElement) {
+        totalPriceElement.innerHTML = `$${totalCartValue.toFixed(2)}`;
+    }
+}
+
+async function deleteProductFromCartPage(productId, userId) {
+    try {
+        let result = await deleteProductFromCart(userId, productId);
+        if (result.success) {
+            console.log("Product deleted successfully");
+            return true;
+        } else {
+            console.error("Failed to delete product");
+            return false; 
+        }
+    } catch (error) {
+        console.error("Error deleting product:", error);
+        return false; 
+    }
 }
