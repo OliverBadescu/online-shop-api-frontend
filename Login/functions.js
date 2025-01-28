@@ -56,10 +56,7 @@ export function createLoginPage(){
 
             const data = result.body;
             const id = data.id;
-            const cartResult = await getCartByUserId(id);
-            const cartData = cartResult.body;
-            const cart = cartData.list;
-            createHomePage(id, cart);
+            createHomePage(id);
         }else{
             const error = document.querySelector(".login-error");
             if(error){

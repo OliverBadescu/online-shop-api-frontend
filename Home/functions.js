@@ -1,9 +1,10 @@
 import { getAllProducts } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
 import { addProductToCart, getCartByUserId } from "../Cart/service.js";
+import { createShopPage } from "../Shop/functions.js";
 
 
-export function createHomePage(userId,cart){
+export async function createHomePage(userId){
 
     let container = document.querySelector(".container");
     let ct = 0;
@@ -15,7 +16,7 @@ export function createHomePage(userId,cart){
 
         <div class="navigation-container">
             <a href="#"><p>Home</p></a>
-            <a href="#"><p>Shop</p></a>
+            <a href="#" class="shop-link"><p>Shop</p></a>
             <a href="#"><p>About</p></a>
             <a href="#"><p>Contact</p></a>
         </div>
@@ -132,14 +133,21 @@ export function createHomePage(userId,cart){
 
     });
 
-    shoppingCart.addEventListener('click', () =>{
-        loadCart(userId);
+    shoppingCart.addEventListener('click',async () =>{
+        const cart =await loadCart(userId);
         createCartPage(cart, userId);
+    });
+
+    const shopLink = document.querySelector('.shop-link');
+
+    shopLink.addEventListener('click', () =>{
+        createShopPage(userId);
     });
 
 
 
 }
+
 
 function createProductCard(product, userId) {
     const div = document.createElement("div");
@@ -184,7 +192,7 @@ function attachProductCards(products, userId){
     })
 }
 
-async function loadProducts(offset = 0, limit = 8, userId) { 
+export async function loadProducts(offset = 0, limit = 8, userId) { 
     try {
         let response = await getAllProducts();
         let products = response.body.list;
@@ -209,9 +217,7 @@ async function loadCart(userId){
     let cart = body.list;
 
     console.log(cart);
-
     return cart;
-
 
 
 }

@@ -23,7 +23,6 @@ export async function getCartByUserId(userId){
 
         let data= await response.json();
 
-
         return {
             status: response.status,
             success:true,

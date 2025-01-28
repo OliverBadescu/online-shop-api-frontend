@@ -1,3 +1,4 @@
+import { createHomePage } from "../Home/functions.js";
 import { deleteProductFromCart } from "./service.js";
 
 export function createCartPage(cart, userId){
@@ -12,16 +13,16 @@ export function createCartPage(cart, userId){
         <h1>Furniro</h1>
 
         <div class="navigation-container">
-            <a href=""><p>Home</p></a>
-            <a href=""><p>Shop</p></a>
-            <a href=""><p>About</p></a>
-            <a href=""><p>Contact</p></a>
+            <a href="#" class="home-link"><p>Home</p></a>
+            <a href="#"><p>Shop</p></a>
+            <a href="#"><p>About</p></a>
+            <a href="#"><p>Contact</p></a>
         </div>
 
         <div class="navigation-container-icons">
             <a href="#" class="user-icon"><i class="fa-regular fa-user"></i></a>
-            <a href=""><i class="fa-regular fa-heart"></i></a>
-            <a href=""><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="#"><i class="fa-regular fa-heart"></i></a>
+            <a href="#"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </div>
 
@@ -127,6 +128,7 @@ export function createCartPage(cart, userId){
     </div>
     
     `;
+
     attachProductCards(cart, userId);
     createTotalCart(cart);
 
@@ -134,16 +136,13 @@ export function createCartPage(cart, userId){
 
     let table = document.querySelector('.cart-table');
 
-    table.addEventListener('click', async (event) =>{
-        let product = event.target;
 
-        if(product.classList.contains("delete-product")){
-            const productId = product.getAttribute("data-id");
+    let homeLink = document.querySelector(".home-link");
 
-        }
+    homeLink.addEventListener('click', ()=>{
+        createHomePage(userId);
 
     });
-
 }
 
 
@@ -163,15 +162,19 @@ function createTotalCart(products) {
         console.error("Total section not found");
     }
 }
-
 function attachProductCards(products, userId) {
+    console.log("Products:", products); 
     let cardSection = document.querySelector('.cart-table');
+
+    if (!Array.isArray(products)) {
+        console.error("Expected an array of products, but received:", products);
+        return; 
+    }
 
     products.map(product => createCartProductCard(product, userId, products)).forEach(element => {
         cardSection.appendChild(element);
     });
 }
-
 function createCartProductCard(product, userId, products) {
     const tr = document.createElement("tr");
     tr.classList.add("product-card-cart");
