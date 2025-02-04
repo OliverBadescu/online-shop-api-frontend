@@ -1,4 +1,5 @@
-import { loadProducts } from "../Home/functions.js";
+import { createHomePage, loadProducts, loadCart } from "../Home/functions.js";
+import { createCartPage } from "../Cart/functions.js";
 
 
 
@@ -13,7 +14,7 @@ export async function createShopPage(userId){
         <h1>Furniro</h1>
 
         <div class="navigation-container">
-            <a href="#"><p>Home</p></a>
+            <a href="#" class = "home-link"><p>Home</p></a>
             <a href="#"><p>Shop</p></a>
             <a href="#"><p>About</p></a>
             <a href="#"><p>Contact</p></a>
@@ -37,7 +38,7 @@ export async function createShopPage(userId){
     <div class="filter-container">
 
         <div class="filter-container right-side">
-            <i class="fa-solid fa-sliders"></i> 
+            <a href="#" class="filter-button"><i class="fa-solid fa-sliders"></i></a>
             <p>Filter</p>
             <p class="result-text">Showing 1-16 of 32 results</p>
         </div>
@@ -137,7 +138,22 @@ export async function createShopPage(userId){
     
     `;
 
-    loadProducts(ct, limit, userId)
+    loadProducts(ct, limit, userId);
+
+    const homeLink= document.querySelector(".home-link");
+
+    homeLink.addEventListener('click', ()=> {
+        createHomePage(userId);
+    });
+
+    const shoppingCart= document.querySelector('.shopping-cart-icon');
+
+    shoppingCart.addEventListener('click',async () =>{
+        const cart =await loadCart(userId);
+        createCartPage(cart, userId);
+    });
+
+
 
 }
 

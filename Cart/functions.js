@@ -1,5 +1,7 @@
 import { createHomePage } from "../Home/functions.js";
-import { deleteProductFromCart } from "./service.js";
+import { deleteProductFromCart, updateCartQuantity } from "./service.js";
+import { createShopPage } from "../Shop/functions.js";
+import { loadCart } from "../Home/functions.js";
 
 export function createCartPage(cart, userId){
 
@@ -14,7 +16,7 @@ export function createCartPage(cart, userId){
 
         <div class="navigation-container">
             <a href="#" class="home-link"><p>Home</p></a>
-            <a href="#"><p>Shop</p></a>
+            <a href="#" class ="shop-link"><p>Shop</p></a>
             <a href="#"><p>About</p></a>
             <a href="#"><p>Contact</p></a>
         </div>
@@ -54,7 +56,7 @@ export function createCartPage(cart, userId){
             <h1>Cart Total</h1>
             <div class="total-cart">
                 <p>Total</p>
-
+                <p class="total-price">0</p>
             </div>
 
             <button class="check-out-button">Check Out</button>
@@ -133,15 +135,17 @@ export function createCartPage(cart, userId){
     createTotalCart(cart);
 
 
-
-    let table = document.querySelector('.cart-table');
-
-
     let homeLink = document.querySelector(".home-link");
 
     homeLink.addEventListener('click', ()=>{
         createHomePage(userId);
 
+    });
+
+    const shopLink = document.querySelector('.shop-link');
+    
+    shopLink.addEventListener('click', () =>{
+        createShopPage(userId);
     });
 }
 
@@ -151,19 +155,11 @@ function createTotalCart(products) {
         return total + product.price * product.quantity;
     }, 0); 
 
-    const p = document.createElement("p");
-    p.classList.add("total-price");
+    const p = document.querySelector(".total-price");
     p.innerHTML = `$${totalCartValue.toFixed(2)}`; 
 
-    let totalSection = document.querySelector('.total-cart');
-    if (totalSection) {
-        totalSection.appendChild(p);
-    } else {
-        console.error("Total section not found");
-    }
 }
 function attachProductCards(products, userId) {
-    console.log("Products:", products); 
     let cardSection = document.querySelector('.cart-table');
 
     if (!Array.isArray(products)) {
@@ -179,13 +175,41 @@ function createCartProductCard(product, userId, products) {
     const tr = document.createElement("tr");
     tr.classList.add("product-card-cart");
 
+    const subtotal = (product.price * product.quantity).toFixed(2);
     tr.innerHTML = `
         <td>${product.name}</td>
         <td>$${product.price}</td>
         <td><input type="number" name="number" id="quantity" value="${product.quantity}"></td>
-        <td>$${product.price * product.quantity}</td>
+        <td class="subtotal">$${subtotal}</td>
         <td><a href="#" data-id="${product.productId}" class="delete-product"><i class="fa-solid fa-trash"></i></a></td>
     `;
+
+    const quantityInput = tr.querySelector('#quantity');
+    quantityInput.addEventListener('change', async (event) => {
+        const quantity = parseInt(event.target.value, 10);
+
+        const updateRequest = {
+            quantity: quantity
+        }
+        if (quantity < 1) {
+            alert("Quantity must be at least 1");
+            event.target.value = product.quantity; 
+            return;
+        }
+
+        const data = await updateCartQuantity(userId, product.productId, updateRequest);
+        console.log(data);
+        if (data.success) {
+            product.quantity = quantity;
+            const newSubtotal = (product.price * quantity).toFixed(2);
+            tr.querySelector('.subtotal').textContent = `$${newSubtotal}`;
+
+            createTotalCart(products);
+        } else {
+            alert("Failed to update quantity. Please try again.");
+            event.target.value = product.quantity; 
+        }
+    });
 
     const deleteButton = tr.querySelector('.delete-product');
     deleteButton.addEventListener('click', async (event) => {
@@ -200,30 +224,31 @@ function createCartProductCard(product, userId, products) {
                 products.splice(productIndex, 1); 
             }
             tr.remove();
-            updateTotalCartAfterDeletion(products);
+            updateTotalCartAfterDeletion(products, userId);
         }
     });
 
     return tr;
 }
 
-function updateTotalCartAfterDeletion(products) {
+async function updateTotalCartAfterDeletion(products, userId) {
+
+    products = await loadCart(userId);
     const totalCartValue = products.reduce((total, product) => {
         return total + product.price * product.quantity;
     }, 0);
 
     const totalPriceElement = document.querySelector('.total-price');
-    if (totalPriceElement) {
-        totalPriceElement.innerHTML = `$${totalCartValue.toFixed(2)}`;
-    } else {
-        console.error("Total price element not found");
-    }
+
+
+    totalPriceElement.innerHTML = `$${totalCartValue.toFixed(2)}`;
+    createTotalCart(products);
+
 }
 async function deleteProductFromCartPage(productId, userId) {
     try {
         let result = await deleteProductFromCart(userId, productId);
         if (result.success) {
-            console.log("Product deleted successfully");
             return true;
         } else {
             console.error("Failed to delete product");

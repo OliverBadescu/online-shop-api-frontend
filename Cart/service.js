@@ -82,3 +82,27 @@ export async function addProductToCart(userId, product){
        return { success: false, message: err };
    }
 }
+
+
+export async function updateCartQuantity(userId, productId, quantityRequest){
+    try{
+
+
+        let response= await apiCart(`updateProductQuantity/${userId}/products/${productId}`,"put",quantityRequest)
+
+
+        let data= await response.json();
+
+
+        return {
+            status: response.status,
+            success:true,
+            body: data
+
+       };
+
+   }catch(err){
+
+       return { success: false, message: err };
+   }
+}

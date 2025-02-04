@@ -2,6 +2,7 @@ import { getAllProducts } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
 import { addProductToCart, getCartByUserId } from "../Cart/service.js";
 import { createShopPage } from "../Shop/functions.js";
+import { createProductPage } from "../ProductPage/functions.js";
 
 
 export async function createHomePage(userId){
@@ -35,7 +36,7 @@ export async function createHomePage(userId){
             <p class="line-space">New Arrival</p>
             <h2>Discover Our <br> New Collection</h2>
             <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Odit, obcaecati. Lorem ipsum, dolor sit amet consectetur adipisicing elit. Numquam, suscipit.</p>
-            <button>BUY NOW</button>
+            <button class="buy-now-btn">BUY NOW</button>
         </div>
 
     </div>
@@ -122,7 +123,7 @@ export async function createHomePage(userId){
     
     `;
 
-    loadProducts(ct, limit, userId)
+    loadProducts(ct, limit, userId);
 
     const showMore = document.querySelector('.show-more-button');
     const shoppingCart= document.querySelector('.shopping-cart-icon');
@@ -144,10 +145,15 @@ export async function createHomePage(userId){
         createShopPage(userId);
     });
 
+    const buyNow = document.querySelector(".buy-now-btn");
+
+    buyNow.addEventListener('click' , () =>{
+        createShopPage(userId);
+    });
+
 
 
 }
-
 
 function createProductCard(product, userId) {
     const div = document.createElement("div");
@@ -168,16 +174,18 @@ function createProductCard(product, userId) {
     } else {
         addToCartButton.addEventListener('click', async () => {
 
-            const productRequest = {
-                productId: addToCartButton.getAttribute('data-id'),
-                quantity: 1
-            };
+            // const productRequest = {
+            //     productId: addToCartButton.getAttribute('data-id'),
+            //     quantity: 1
+            // };
 
-            let result = await addProductToCart(userId, productRequest);
+            // let result = await addProductToCart(userId, productRequest);
 
-            if (result) {
-                alert("Added to cart successfully");
-            }
+            // if (result) {
+            //     alert("Added to cart successfully");
+            // }
+
+            createProductPage(userId, addToCartButton.getAttribute('data-id'));
         });
     }
 
@@ -210,13 +218,12 @@ export async function loadProducts(offset = 0, limit = 8, userId) {
     }
 }
 
-async function loadCart(userId){
+export async function loadCart(userId){
 
     let result = await getCartByUserId(userId);
     let body = result.body;
     let cart = body.list;
 
-    console.log(cart);
     return cart;
 
 
