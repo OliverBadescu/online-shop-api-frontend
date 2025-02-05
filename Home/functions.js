@@ -1,6 +1,6 @@
 import { getAllProducts } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
-import { addProductToCart, getCartByUserId } from "../Cart/service.js";
+import { getCartByUserId } from "../Cart/service.js";
 import { createShopPage } from "../Shop/functions.js";
 import { createProductPage } from "../ProductPage/functions.js";
 
@@ -155,7 +155,7 @@ export async function createHomePage(userId){
 
 }
 
-function createProductCard(product, userId) {
+function createProductCard(product) {
     const div = document.createElement("div");
     div.classList.add("product-card");
 
@@ -167,35 +167,13 @@ function createProductCard(product, userId) {
         <button class="add-to-cart" data-id="${product.id}">Add to cart</button>
     `;
 
-
-    const addToCartButton = div.querySelector('.add-to-cart');
-    if (!addToCartButton) {
-        console.error("Add to cart button not found");
-    } else {
-        addToCartButton.addEventListener('click', async () => {
-
-            // const productRequest = {
-            //     productId: addToCartButton.getAttribute('data-id'),
-            //     quantity: 1
-            // };
-
-            // let result = await addProductToCart(userId, productRequest);
-
-            // if (result) {
-            //     alert("Added to cart successfully");
-            // }
-
-            createProductPage(userId, addToCartButton.getAttribute('data-id'));
-        });
-    }
-
     return div;
 }
 
-function attachProductCards(products, userId){
+function attachProductCards(products){
     let cardSection = document.querySelector('.card-section');
 
-    products.map(product => createProductCard(product, userId)).forEach(element =>{
+    products.map(product => createProductCard(product)).forEach(element =>{
         cardSection.appendChild(element);
     })
 }

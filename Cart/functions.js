@@ -2,6 +2,7 @@ import { createHomePage } from "../Home/functions.js";
 import { deleteProductFromCart, updateCartQuantity } from "./service.js";
 import { createShopPage } from "../Shop/functions.js";
 import { loadCart } from "../Home/functions.js";
+import { createCheckOutPage } from "../CheckOut/functions.js";
 
 export function createCartPage(cart, userId){
 
@@ -146,6 +147,12 @@ export function createCartPage(cart, userId){
     
     shopLink.addEventListener('click', () =>{
         createShopPage(userId);
+    });
+
+    const checkOutBtn = document.querySelector('.check-out-button');
+
+    checkOutBtn.addEventListener('click', () =>{
+        createCheckOutPage(userId);
     });
 }
 
