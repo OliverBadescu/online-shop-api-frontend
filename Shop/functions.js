@@ -1,6 +1,6 @@
 import { createHomePage, loadProducts, loadCart } from "../Home/functions.js";
 import { createCartPage } from "../Cart/functions.js";
-
+import { createProductPage } from "../ProductPage/functions.js";
 
 
 export async function createShopPage(userId){
@@ -138,7 +138,7 @@ export async function createShopPage(userId){
     
     `;
 
-    loadProducts(ct, limit, userId);
+    await loadProducts(ct, limit, userId);
 
     const homeLink= document.querySelector(".home-link");
 
@@ -151,6 +151,14 @@ export async function createShopPage(userId){
     shoppingCart.addEventListener('click',async () =>{
         const cart =await loadCart(userId);
         createCartPage(cart, userId);
+    });
+
+    const addToCartButtons = document.querySelectorAll('.add-to-cart');
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            const productId = event.target.getAttribute('data-id');
+            createProductPage(userId, productId);
+        });
     });
 
 

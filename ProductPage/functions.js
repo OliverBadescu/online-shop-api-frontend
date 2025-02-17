@@ -4,6 +4,7 @@ import { createCartPage } from "../Cart/functions.js";
 import { addProductToCart } from "../Cart/service.js";
 
 
+
 export async function createProductPage(userId, productId){
 
     let ct = 0;

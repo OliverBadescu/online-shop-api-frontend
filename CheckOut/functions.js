@@ -1,6 +1,8 @@
 import { loadCart, createHomePage } from "../Home/functions.js";
 import { createCartPage } from "../Cart/functions.js";
 import { createShopPage } from "../Shop/functions.js";
+import { addOrder } from "./service.js";
+import { clearUserCart } from "../Cart/service.js";
 
 export async function createCheckOutPage(userId){
 
@@ -154,7 +156,6 @@ export async function createCheckOutPage(userId){
 
     const cart = await loadCart(userId);
 
-    console.log(cart);
     attachProductName(cart);
     attachSubtotal(cart);
     calculateAndAttachTotal(cart);
@@ -177,6 +178,41 @@ export async function createCheckOutPage(userId){
     shoppingCart.addEventListener('click',async () =>{
         const cart =await loadCart(userId);
         createCartPage(cart, userId);
+    });
+
+    const placeOrder = document.querySelector('.place-order-button');
+    
+    placeOrder.addEventListener('click', async() =>{
+        const cart =await loadCart(userId);
+
+        const currentDate = new Date();
+
+   
+        const year = currentDate.getFullYear();
+        const month = String(currentDate.getMonth() + 1).padStart(2, '0'); 
+        const day = String(currentDate.getDate()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day}`;
+
+        const productList = cart.map(item => ({
+            productName: item.name, 
+            productId: item.productId,     
+            quantity: item.quantity 
+        }));
+
+        const orderRequest = {
+            "orderDate": formattedDate,
+            "productList": productList
+        }
+
+        let data = await addOrder(userId, orderRequest);
+
+        if(data.success){
+            alert("Order placed successfully");
+            await clearUserCart(userId);
+        }else{
+            alert("Error when sending order");
+        }
     });
 }
 
@@ -233,3 +269,4 @@ function calculateAndAttachTotal(products){
     container.textContent = `$${total.toFixed(2)}`;
 
 }
+

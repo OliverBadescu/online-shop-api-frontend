@@ -1,108 +1,60 @@
-function apiCart(path, method = "GET", body = null) {
-    const url = "http://localhost:8080/cart/" + path;
+function api(path, method = 'GET', body = null) {
+    const url = `http://localhost:8080/cart/${path}`;
     const options = {
         method,
         headers: {
             'Content-Type': 'application/json; charset=utf-8',
             'X-Requested-With': 'XMLHttpRequest',
-        }
-    }
-    if (body != null) {
+        },
+    };
+
+    if (body) {
         options.body = JSON.stringify(body);
     }
-    
+
     return fetch(url, options);
 }
 
-export async function getCartByUserId(userId){
-    try{
+async function request(path, method = 'GET', body = null) {
+    try {
+        const response = await api(path, method, body);
+        const data = await response.json().catch(() => null);
 
-
-        let response= await apiCart(`getCartByUserId/${userId}`,"get",null)
-
-
-        let data= await response.json();
+        if (!response.ok) {
+            const errorMessage =
+                (data && data.message) || response.statusText || 'Request failed';
+            throw new Error(errorMessage);
+        }
 
         return {
+            success: true,
             status: response.status,
-            success:true,
-            body: data
-
-       };
-
-   }catch(err){
-
-       return { success: false, message: err };
-   }
+            body: data,
+        };
+    } catch (error) {
+        return {
+            success: false,
+            message: error.message || 'Something went wrong',
+        };
+    }
 }
 
-export async function deleteProductFromCart(userId, productId){
-    try{
-
-
-        let response= await apiCart(`deleteProductFromCart/${userId}/product/${productId}`,"delete",null)
-
-
-        let data= await response.json();
-
-
-        return {
-            status: response.status,
-            success:true,
-            body: data
-
-       };
-
-   }catch(err){
-
-       return { success: false, message: err };
-   }
+export async function getCartByUserId(userId) {
+    return request(`getCartByUserId/${userId}`, 'GET');
 }
 
-
-export async function addProductToCart(userId, product){
-    try{
-
-
-        let response= await apiCart(`addProductToCart/${userId}`,"post",product)
-
-
-        let data= await response.json();
-
-
-        return {
-            status: response.status,
-            success:true,
-            body: data
-
-       };
-
-   }catch(err){
-
-       return { success: false, message: err };
-   }
+export async function deleteProductFromCart(userId, productId) {
+    return request(`deleteProductFromCart/${userId}/product/${productId}`, 'DELETE');
 }
 
+export async function addProductToCart(userId, product) {
+    return request(`addProductToCart/${userId}`, 'POST', product);
+}
 
-export async function updateCartQuantity(userId, productId, quantityRequest){
-    try{
+export async function updateCartQuantity(userId, productId, quantityRequest) {
+    return request(`updateProductQuantity/${userId}/products/${productId}`, 'PUT', quantityRequest);
+}
 
-
-        let response= await apiCart(`updateProductQuantity/${userId}/products/${productId}`,"put",quantityRequest)
-
-
-        let data= await response.json();
-
-
-        return {
-            status: response.status,
-            success:true,
-            body: data
-
-       };
-
-   }catch(err){
-
-       return { success: false, message: err };
-   }
+export async function clearUserCart(userId){
+    return request(`emptyUserCart/${userId}`, 'GET');
 }
