@@ -3,6 +3,7 @@ import { createCartPage } from "../Cart/functions.js";
 import { getCartByUserId } from "../Cart/service.js";
 import { createShopPage } from "../Shop/functions.js";
 import { createProductPage } from "../ProductPage/functions.js";
+import { createAccountPage } from "../Account/functions.js";
 
 
 export async function createHomePage(userId){
@@ -149,6 +150,13 @@ export async function createHomePage(userId){
 
     buyNow.addEventListener('click' , () =>{
         createShopPage(userId);
+    });
+
+    const userIcon = document.querySelector('.user-icon');
+
+    userIcon.addEventListener('click', () => {
+
+        createAccountPage(userId);
     });
 
 

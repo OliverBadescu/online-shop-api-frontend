@@ -992,3 +992,52 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
 .info-checkout-page{
     height: 20%;
 }
+
+.main-container-account{
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    margin: 70px 0;
+    width: 100%;
+
+}
+
+
+.left-side-buttons{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    width: 30%;
+    height: 100%;
+
+}
+
+.left-side-buttons button{
+    width: 50%;
+
+}
+
+.right-side-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 70%;
+}
+
+.right-side-info input{
+    width: 30%;
+}
+
+.right-side-info .email-input{
+    margin-bottom: -20px;
+}
+
+.right-side-info div{
+    margin-bottom: 20px;
+}
+
+button:disabled{
+    background-color: grey;
+    
+}
