@@ -3,6 +3,7 @@ import { createCartPage } from "../Cart/functions.js";
 import { createShopPage } from "../Shop/functions.js";
 import { addOrder } from "./service.js";
 import { clearUserCart } from "../Cart/service.js";
+import { createAccountPage } from "../Account/functions.js";
 
 export async function createCheckOutPage(userId){
 
@@ -166,6 +167,14 @@ export async function createCheckOutPage(userId){
         createHomePage(userId);
     
     });
+
+    const userIcon = document.querySelector('.user-icon');
+    
+        userIcon.addEventListener('click', () => {
+    
+            createAccountPage(userId);
+        });
+    
     
     const shopLink = document.querySelector('.shop-link');
         
@@ -210,6 +219,7 @@ export async function createCheckOutPage(userId){
         if(data.success){
             alert("Order placed successfully");
             await clearUserCart(userId);
+            createHomePage(userId);
         }else{
             alert("Error when sending order");
         }
@@ -241,7 +251,7 @@ function createSubtotalCard(product){
     const subtotal = product.price * product.quantity.toFixed(2);
 
     const subtotalElement = document.createElement('p');
-    subtotalElement.innerHTML = `$${subtotal}`;
+    subtotalElement.innerHTML = `$${subtotal.toFixed(2)}`;
     return subtotalElement;
 
 }

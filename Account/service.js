@@ -42,3 +42,7 @@ async function request(path, method = 'GET', body = null) {
 export async function getUserById(userId){
     return request(`getUserById/${userId}`)
 }
+
+export async function updateUser(userId, updateRequest){
+    return request(`update/${userId}`, 'PUT', updateRequest);
+}

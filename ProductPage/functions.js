@@ -2,8 +2,8 @@ import { loadProducts,loadCart,createHomePage } from "../Home/functions.js";
 import { getProductById } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
 import { addProductToCart } from "../Cart/service.js";
-
-
+import { createShopPage } from "../Shop/functions.js";
+import { createAccountPage } from "../Account/functions.js";
 
 export async function createProductPage(userId, productId){
 
@@ -179,6 +179,14 @@ export async function createProductPage(userId, productId){
     });
 
     const addToCartButton = document.querySelector('.add-to-cart-product-page-button');
+
+    const userIcon = document.querySelector('.user-icon');
+    
+        userIcon.addEventListener('click', () => {
+    
+            createAccountPage(userId);
+        });
+    
 
     addToCartButton.addEventListener('click', async ()=>{
 

@@ -3,6 +3,7 @@ import { deleteProductFromCart, updateCartQuantity } from "./service.js";
 import { createShopPage } from "../Shop/functions.js";
 import { loadCart } from "../Home/functions.js";
 import { createCheckOutPage } from "../CheckOut/functions.js";
+import { createAccountPage } from "../Account/functions.js";
 
 export function createCartPage(cart, userId){
 
@@ -154,6 +155,14 @@ export function createCartPage(cart, userId){
     checkOutBtn.addEventListener('click', () =>{
         createCheckOutPage(userId);
     });
+
+    const userIcon = document.querySelector('.user-icon');
+    
+        userIcon.addEventListener('click', () => {
+    
+            createAccountPage(userId);
+        });
+    
 }
 
 

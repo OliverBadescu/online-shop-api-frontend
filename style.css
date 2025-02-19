@@ -1029,10 +1029,6 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
     width: 30%;
 }
 
-.right-side-info .email-input{
-    margin-bottom: -20px;
-}
-
 .right-side-info div{
     margin-bottom: 20px;
 }
@@ -1040,4 +1036,8 @@ input[type=email], input[type=password],input[type=number],input[type=text] {
 button:disabled{
     background-color: grey;
     
+}
+
+.save-changes-button{
+    display: none;
 }

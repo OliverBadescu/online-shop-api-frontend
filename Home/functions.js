@@ -2,7 +2,6 @@ import { getAllProducts } from "./service.js";
 import { createCartPage } from "../Cart/functions.js";
 import { getCartByUserId } from "../Cart/service.js";
 import { createShopPage } from "../Shop/functions.js";
-import { createProductPage } from "../ProductPage/functions.js";
 import { createAccountPage } from "../Account/functions.js";
 
 

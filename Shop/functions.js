@@ -1,7 +1,7 @@
 import { createHomePage, loadProducts, loadCart } from "../Home/functions.js";
 import { createCartPage } from "../Cart/functions.js";
 import { createProductPage } from "../ProductPage/functions.js";
-
+import { createAccountPage } from "../Account/functions.js";
 
 export async function createShopPage(userId){
 
@@ -160,6 +160,14 @@ export async function createShopPage(userId){
             createProductPage(userId, productId);
         });
     });
+
+    const userIcon = document.querySelector('.user-icon');
+    
+        userIcon.addEventListener('click', () => {
+    
+            createAccountPage(userId);
+        });
+    
 
 
 

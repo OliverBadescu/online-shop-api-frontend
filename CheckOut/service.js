@@ -43,3 +43,6 @@ function api(path, method = 'GET', body = null) {
     return request(`${userId}`,'POST', orderRequest)
   }
   
+  export function getAllCustomerOrders(userId){
+    return request(`getCustomerOrders/${userId}`, 'GET');
+  }
